@@ -32,13 +32,12 @@ USUDSScriptNode* USUDSScript::GetNextNode(const USUDSScriptNode* Node) const
 		UE_LOG(LogSUDS, Error, TEXT("Called GetNextNode on a node with more than one edge"));
 		return nullptr;
 	}
-	
 }
 
 
 #define kChoiceFound 1
 #define kChoiceNotFoundBeforeText -1
-#define kChoiceNotFoundBeforeEnd 0 
+#define kChoiceNotFoundBeforeEnd 0
 
 
 bool USUDSScript::DoesAnyPathAfterLeadToChoice(USUDSScriptNode* FromNode)
@@ -89,7 +88,7 @@ int USUDSScript::RecurseLookForChoice(USUDSScriptNode* CurrNode)
 			}
 		case ESUDSScriptNodeType::Event:
 		case ESUDSScriptNodeType::SetVariable:
-			CurrNode = GetNextNode(CurrNode); 
+			CurrNode = GetNextNode(CurrNode);
 			break;
 		case ESUDSScriptNodeType::Gosub:
 			// When we hit a gosub here we go into it, not after it
@@ -102,13 +101,13 @@ int USUDSScript::RecurseLookForChoice(USUDSScriptNode* CurrNode)
 					return SubResult;
 				}
 			}
-			// Otherwise, we didn't conclude within the sub, continue following it
+		// Otherwise, we didn't conclude within the sub, continue following it
 			CurrNode = GetNextNode(CurrNode);
 			break;
 		default: ;
 		case ESUDSScriptNodeType::Return:
 			// this is when we're exploring a sub for the choice
-			return kChoiceNotFoundBeforeEnd; 
+			return kChoiceNotFoundBeforeEnd;
 		};
 	}
 
@@ -150,7 +149,6 @@ void USUDSScript::FinishImport()
 			}
 		}
 	}
-	
 }
 
 USUDSScriptNode* USUDSScript::GetHeaderNode() const
@@ -177,7 +175,6 @@ USUDSScriptNode* USUDSScript::GetNodeByLabel(const FName& Label) const
 	}
 
 	return nullptr;
-	
 }
 
 USUDSScriptNodeText* USUDSScript::GetNodeByTextID(const FString& TextID) const
@@ -216,6 +213,11 @@ USUDSScriptNodeGosub* USUDSScript::GetNodeByGosubID(const FString& ID) const
 	return nullptr;
 }
 
+const FDialogImageDefaultRow* USUDSScript::GetImageDefaultRow(const FString& SpeakerID)const
+{
+	return SpeakersDefaultImage.Find(SpeakerID); //Note: Custom
+}
+
 UDialogueVoice* USUDSScript::GetSpeakerVoice(const FString& SpeakerID) const
 {
 	if (UDialogueVoice* const* pVoice = SpeakerVoices.Find(SpeakerID))
@@ -245,11 +247,13 @@ void USUDSScript::GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const
 {
 	if (AssetImportData)
 	{
-		OutTags.Add( FAssetRegistryTag(SourceFileTagName(), AssetImportData->GetSourceData().ToJson(), FAssetRegistryTag::TT_Hidden) );
+		OutTags.Add(FAssetRegistryTag(SourceFileTagName(), AssetImportData->GetSourceData().ToJson(),
+		                              FAssetRegistryTag::TT_Hidden));
 	}
 
 	Super::GetAssetRegistryTags(OutTags);
 }
+
 void USUDSScript::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);

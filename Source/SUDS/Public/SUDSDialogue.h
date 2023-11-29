@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SUDSScriptNode.h"
 #include "SUDSExpression.h"
+#include "SUDSScriptImage.h"
 #include "UObject/Object.h"
 #include "SUDSDialogue.generated.h"
 
@@ -290,6 +291,9 @@ public:
 	/// Returns null if there is no wave for this line.
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")
 	UDialogueWave* GetWave() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")
+	FDialogImageRow GetImageRow() const;
 
 	/// Return whether the current dialogue node has a Dialogue Wave associated with it
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")

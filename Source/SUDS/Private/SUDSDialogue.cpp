@@ -461,6 +461,23 @@ UDialogueWave* USUDSDialogue::GetWave() const
 	return nullptr;
 }
 
+FDialogImageRow USUDSDialogue::GetImageRow() const //Note: Custom
+{
+	if (CurrentSpeakerNode)
+    {
+	    if(auto Item = CurrentSpeakerNode->GetImageRow(); Item.bUseDefault)
+		{
+			if( const auto Default = BaseScript->GetImageDefaultRow(GetSpeakerID()))
+			{
+				Item.Image =  Default->Image;
+				Item.Space =  Default->Space;
+			}
+			return Item;
+		}
+    }
+    return FDialogImageRow{};
+}
+
 bool USUDSDialogue::IsCurrentLineVoiced() const
 {
 	if (CurrentSpeakerNode)

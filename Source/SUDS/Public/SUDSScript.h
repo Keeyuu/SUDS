@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Sound/DialogueVoice.h"
+#include "SUDSScriptImage.h"
 #include "UObject/Object.h"
 #include "SUDSScript.generated.h"
 
@@ -19,7 +20,6 @@ class SUDS_API USUDSScript : public UObject
 	GENERATED_BODY()
 
 protected:
-
 	/// Array of nodes (static after import)
 	UPROPERTY(BlueprintReadOnly, Category="SUDS")
 	TArray<USUDSScriptNode*> Nodes;
@@ -39,13 +39,16 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="SUDS")
 	TArray<FString> Speakers;
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
+	TMap<FString, FDialogImageDefaultRow> SpeakersDefaultImage; //Note: Custom
+
 	/// When using VO, Dialogue Voice assets are associated with speaker IDs
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
 	TMap<FString, UDialogueVoice*> SpeakerVoices;
 
 	bool DoesAnyPathAfterLeadToChoice(USUDSScriptNode* FromNode);
 	int RecurseLookForChoice(USUDSScriptNode* CurrNode);
-	
+
 public:
 	void StartImport(TArray<USUDSScriptNode*>** Nodes,
 	                 TArray<USUDSScriptNode*>** HeaderNodes,
@@ -58,7 +61,7 @@ public:
 	const TArray<USUDSScriptNode*>& GetHeaderNodes() const { return HeaderNodes; }
 	const TMap<FName, int>& GetLabelList() const { return LabelList; }
 	const TMap<FName, int>& GetHeaderLabelList() const { return HeaderLabelList; }
-	
+
 
 	/// Get the first header node, if any (header nodes are run every time the script starts)
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS")
@@ -87,23 +90,24 @@ public:
 	/// Get the list of speakers
 	const TArray<FString>& GetSpeakers() const { return Speakers; }
 
+	const FDialogImageDefaultRow* GetImageDefaultRow(const FString& SpeakerID) const; //Note: Custom
+
 	UFUNCTION(BlueprintCallable, Category="SUDS")
 	UDialogueVoice* GetSpeakerVoice(const FString& SpeakerID) const;
 
 	/// Set up the speaker voice association
 	void SetSpeakerVoice(const FString& SpeakerID, UDialogueVoice* Voice);
-	const TMap<FString, UDialogueVoice*> GetSpeakerVoices() const  { return SpeakerVoices; }
+	const TMap<FString, UDialogueVoice*> GetSpeakerVoices() const { return SpeakerVoices; }
 
 #if WITH_EDITORONLY_DATA
 	// Import data for this 
 	UPROPERTY(VisibleAnywhere, Instanced, Category=ImportSettings)
 	TObjectPtr<class UAssetImportData> AssetImportData;
-	
+
 	// UObject interface
 	virtual void PostInitProperties() override;
 	virtual void GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const override;
 	virtual void Serialize(FArchive& Ar) override;
 	// End of UObject interface
 #endif
-	
 };

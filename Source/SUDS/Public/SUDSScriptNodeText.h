@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SUDSScriptImage.h"
 #include "SUDSScriptNode.h"
 #include "SUDSScriptNodeText.generated.h"
 
 class UDialogueWave;
+
 
 /**
 * A node which contains speaker text 
@@ -28,6 +30,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
 	UDialogueWave* Wave;
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
+	FDialogImageRow ImageRow;
 	/// Convenience flag to let you know whether this text node MAY HAVE choices attached
 	/// If false, there's only one way to proceed from here and no text associated with that
 	/// If true, either there can be > 1 choice options, or a single choice with associated text (this can be when
@@ -49,6 +53,7 @@ public:
 	const FText& GetText() const { return Text; }
 	FString GetTextID() const;
 	UDialogueWave* GetWave() const { return Wave; }
+	FDialogImageRow& GetImageRow()  {return ImageRow; }
 	/// Whether on one select path or another a choice was found
 	/// Doesn't help if within a Gosub as call site may be anywhere
 	bool MayHaveChoices() const { return bHasChoices; }

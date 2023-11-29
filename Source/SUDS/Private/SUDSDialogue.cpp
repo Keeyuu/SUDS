@@ -467,7 +467,7 @@ FDialogImageRow USUDSDialogue::GetImageRow() const //Note: Custom
     {
 	    if(auto Item = CurrentSpeakerNode->GetImageRow(); Item.bUseDefault)
 		{
-			if( const auto Default = BaseScript->GetImageDefaultRow(GetSpeakerID()))
+			if( const auto Default = BaseScript->GetImageDefaultRow(GetSpeakerID());Default)
 			{
 				Item.Image =  Default->Image;
 				Item.Space =  Default->Space;

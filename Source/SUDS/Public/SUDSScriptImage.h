@@ -39,4 +39,7 @@ struct FDialogImageRow : public FDialogImageDefaultRow
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="使用默认图片和位置"))
 	bool bUseDefault = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="隐藏其他,只显示这个"))
+	bool bOccupy = false;
 };

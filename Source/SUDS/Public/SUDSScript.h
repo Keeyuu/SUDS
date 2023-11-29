@@ -39,7 +39,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category="SUDS")
 	TArray<FString> Speakers;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS",Meta = (DisplayName="角色默认图片和位置"))
 	TMap<FString, FDialogImageDefaultRow> SpeakersDefaultImage; //Note: Custom
 
 	/// When using VO, Dialogue Voice assets are associated with speaker IDs

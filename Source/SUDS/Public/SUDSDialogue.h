@@ -28,16 +28,16 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnVariableChangedEvent, class USU
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnVariableRequestedEvent, class USUDSDialogue*, Dialogue, FName, VariableName);
 
 #if WITH_EDITOR
-	// Non-dynamic events for editor use
-	DECLARE_DELEGATE_TwoParams(FOnDialogueSpeakerLineInternal, class USUDSDialogue* /* Dialogue */, int /*SourceLineNo*/);
-	DECLARE_DELEGATE_ThreeParams(FOnDialogueChoiceInternal, class USUDSDialogue* /* Dialogue*/, int /*ChoiceIndex*/, int /*SourceLineNo*/);
-	DECLARE_DELEGATE_OneParam(FOnDialogueProceedingInternal, class USUDSDialogue* /*Dialogue*/);
-	DECLARE_DELEGATE_TwoParams(FOnDialogueStartingInternal, class USUDSDialogue* /*Dialogue*/, FName /*AtLabel*/);
-	DECLARE_DELEGATE_OneParam(FOnDialogueFinishedInternal, class USUDSDialogue* /*Dialogue*/);
-	DECLARE_DELEGATE_FourParams(FOnDialogueEventInternal, class USUDSDialogue* /*Dialogue*/, FName /*EventName*/, const TArray<FSUDSValue>& /*Arguments*/, int /*SourceLineNo*/);
-	DECLARE_DELEGATE_FiveParams(FOnDialogueVarChangedByScriptInternal, class USUDSDialogue* /* Dialogue*/, FName /*VariableName*/, const FSUDSValue& /*Value*/, const FString& /*ExprString*/, int /*SourceLineNo*/);
-	DECLARE_DELEGATE_ThreeParams(FOnDialogueVarChangedByCodeInternal, class USUDSDialogue* /* Dialogue*/, FName /*VariableName*/, const FSUDSValue& /*Value*/);
-	DECLARE_DELEGATE_FourParams(FOnDialogueSelectEval, class USUDSDialogue* /*Dialogue*/, const FString& /*ConditionString*/, bool /*bResult*/, int /*SourceLineNo*/);
+// Non-dynamic events for editor use
+DECLARE_DELEGATE_TwoParams(FOnDialogueSpeakerLineInternal, class USUDSDialogue* /* Dialogue */, int /*SourceLineNo*/);
+DECLARE_DELEGATE_ThreeParams(FOnDialogueChoiceInternal, class USUDSDialogue* /* Dialogue*/, int /*ChoiceIndex*/, int /*SourceLineNo*/);
+DECLARE_DELEGATE_OneParam(FOnDialogueProceedingInternal, class USUDSDialogue* /*Dialogue*/);
+DECLARE_DELEGATE_TwoParams(FOnDialogueStartingInternal, class USUDSDialogue* /*Dialogue*/, FName /*AtLabel*/);
+DECLARE_DELEGATE_OneParam(FOnDialogueFinishedInternal, class USUDSDialogue* /*Dialogue*/);
+DECLARE_DELEGATE_FourParams(FOnDialogueEventInternal, class USUDSDialogue* /*Dialogue*/, FName /*EventName*/, const TArray<FSUDSValue>& /*Arguments*/, int /*SourceLineNo*/);
+DECLARE_DELEGATE_FiveParams(FOnDialogueVarChangedByScriptInternal, class USUDSDialogue* /* Dialogue*/, FName /*VariableName*/, const FSUDSValue& /*Value*/, const FString& /*ExprString*/, int /*SourceLineNo*/);
+DECLARE_DELEGATE_ThreeParams(FOnDialogueVarChangedByCodeInternal, class USUDSDialogue* /* Dialogue*/, FName /*VariableName*/, const FSUDSValue& /*Value*/);
+DECLARE_DELEGATE_FourParams(FOnDialogueSelectEval, class USUDSDialogue* /*Dialogue*/, const FString& /*ConditionString*/, bool /*bResult*/, int /*SourceLineNo*/);
 #endif
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSUDSDialogue, Verbose, All);
@@ -59,7 +59,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Category="SUDS|Dialogue")
 	TArray<FString> ReturnStack;
-	
+
 public:
 	FSUDSDialogueState() {}
 
@@ -90,7 +90,7 @@ public:
 		Ar << *this;
 		return true;
 	}
-	
+
 };
 /**
  * A Dialogue is a runtime instance of a Script (the asset on which the dialogue is based)
@@ -151,7 +151,7 @@ protected:
 	/// External objects which want to closely participate in the dialogue (not just listen to events)
 	UPROPERTY()
 	TArray<UObject*> Participants;
-	
+
 
 	/// All of the dialogue variables
 	/// Dialogue variable state is all held locally. Dialogue participants can retrieve or set values in state.
@@ -169,7 +169,7 @@ protected:
 
 	TSet<FName> CurrentRequestedParamNames;
 	bool bParamNamesExtracted;
-	
+
 	/// Cached derived info
 	mutable FText CurrentSpeakerDisplayName;
 	/// All valid choices
@@ -222,7 +222,7 @@ protected:
 			VariableState.Add(Name, Value);
 			RaiseVariableChange(Name, Value, bFromScript, LineNo);
 		}
-		
+
 	}
 
 public:
@@ -231,12 +231,13 @@ public:
 	// {
 	//		UE_LOG(LogTemp, Warning, TEXT("*********** Destroyed Dialogue!"));
 	// }
+	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue") //NOTE: Custon Keeyu
 	void Initialise(const USUDSScript* Script);
-	
+
 	/// Get the script asset this dialogue is based on
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")
 	const USUDSScript* GetScript() const { return BaseScript; }
-	
+
 	/**
 	 * Begin the dialogue. Make sure you've added all participants before calling this.
 	 * This may not be the first time you've started this dialogue. All previous state is maintained to enable you
@@ -263,7 +264,7 @@ public:
 	/// Retrieve participants from this dialogue
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	const TArray<UObject*>& GetParticipants() const { return Participants; }
-	
+
 	/**
 	 * Set the complete list of participants for this dialogue instance.
 	 * Participants are objects which want to be more closely involved in the dialogue. As opposed to event listeners,
@@ -280,6 +281,10 @@ public:
 	/// Any parameters required will be requested from participants in the dialogue and replaced 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")
 	FText GetText();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="SUDS|Dialogue")
+	FString GetTextNodeId() const; //NOTE: Custom Keeyu
+
 
 	/// Get the DialogueWave associated with the current dialogue node
 	/// Returns null if there is no wave for this line.
@@ -305,7 +310,7 @@ public:
 	/// Get the Dialogue Voice belonging to the named participant, if voiced (Null otherwise)
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	UDialogueVoice* GetVoice(FString Name) const;
-	
+
 	/** If the current line is voiced, plays it in 2D.
 	 * @param VolumeMultiplier A linear scalar multiplied with the volume, in order to make the sound louder or softer.
 	 * @param PitchMultiplier A linear scalar multiplied with the pitch.
@@ -349,11 +354,11 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue", meta=(AdvancedDisplay = "4", UnsafeDuringActorConstruction = "true", Keywords = "play"))
 	UAudioComponent* SpawnVoicedLineAtLocation(FVector Location,
-								  FRotator Rotation,
-								  float VolumeMultiplier = 1.f,
-								  float PitchMultiplier = 1.f,
-								  USoundAttenuation* AttenuationSettings = nullptr,
-								  bool bLooselyMatchTarget = true);
+	                                           FRotator Rotation,
+	                                           float VolumeMultiplier = 1.f,
+	                                           float PitchMultiplier = 1.f,
+	                                           USoundAttenuation* AttenuationSettings = nullptr,
+	                                           bool bLooselyMatchTarget = true);
 
 	/**
 	 * Get the number of choices available from this node.
@@ -398,8 +403,8 @@ public:
 	*/
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	bool HasChoiceBeenTakenPreviously(const FSUDSScriptEdge& Choice);
-	
-	
+
+
 	/**
 	 * Continues the dialogue if (and ONLY if) there is only one valid path/choice out of the current node.
 	 * @return True if the dialogue continues after this, false if the dialogue is now at an end.
@@ -428,7 +433,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	int GetCurrentSourceLine() const;
 
-	
+
 	/**
 	 * Restart the dialogue, either from the start or from a named label.
 	 * @param bResetState Whether to reset ALL dialogue state, as if the dialogue had been created anew. You mostly don't want
@@ -473,7 +478,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	void RestoreSavedState(const FSUDSDialogueState& State);
-	
+
 	/// Get the set of text parameters that are actually being asked for in the current state of the dialogue.
 	/// This will include parameters in the text, and parameters in any current choices being displayed.
 	/// Use this if you want to be more specific about what parameters you supply when ISUDSParticipant::UpdateDialogueParameters
@@ -513,7 +518,7 @@ public:
 	/// Get all variables
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	const TMap<FName, FSUDSValue>& GetVariables() const { return VariableState; }
-	
+
 	/**
 	 * Set a text dialogue variable
 	 * @param Name The name of the variable
@@ -548,7 +553,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	int GetVariableInt(FName Name) const;
-	
+
 	/**
 	 * Set a float dialogue variable 
 	 * @param Name The name of the variable
@@ -564,7 +569,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	float GetVariableFloat(FName Name) const;
-	
+
 	/**
 	 * Set a gender dialogue variable 
 	 * @param Name The name of the variable
@@ -613,7 +618,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SUDS|Dialogue")
 	FName GetVariableName(FName Name) const;
 
-	
+
 	/**
 	 * Remove the definition of a variable.
 	 * This has much same effect as setting the variable back to the default value for this type, since attempting to

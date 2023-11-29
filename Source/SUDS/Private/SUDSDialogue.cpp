@@ -446,6 +446,11 @@ FText USUDSDialogue::GetText()
 	return DummyText;
 }
 
+FString USUDSDialogue::GetTextNodeId() const
+{
+ return CurrentSpeakerNode? FTextInspector::GetTextId(CurrentSpeakerNode->GetText()).GetKey().GetChars():FString();
+}
+
 UDialogueWave* USUDSDialogue::GetWave() const
 {
 	if (CurrentSpeakerNode)

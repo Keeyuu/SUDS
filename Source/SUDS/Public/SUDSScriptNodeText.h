@@ -30,7 +30,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
 	UDialogueWave* Wave;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="SUDS")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="SUDS")
 	FDialogImageRow ImageRow;
 	/// Convenience flag to let you know whether this text node MAY HAVE choices attached
 	/// If false, there's only one way to proceed from here and no text associated with that

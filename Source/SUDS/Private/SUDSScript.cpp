@@ -149,6 +149,10 @@ void USUDSScript::FinishImport()
 			}
 		}
 	}
+	for (const auto Name : Speakers)
+	{
+		SpeakersDefaultImage.Emplace(Name, FDialogImageRow());
+	}
 }
 
 USUDSScriptNode* USUDSScript::GetHeaderNode() const
@@ -213,7 +217,7 @@ USUDSScriptNodeGosub* USUDSScript::GetNodeByGosubID(const FString& ID) const
 	return nullptr;
 }
 
-const FDialogImageDefaultRow* USUDSScript::GetImageDefaultRow(const FString& SpeakerID)const
+const FDialogImageDefaultRow* USUDSScript::GetImageDefaultRow(const FString& SpeakerID) const
 {
 	return SpeakersDefaultImage.Find(SpeakerID); //Note: Custom
 }

@@ -34,12 +34,12 @@ struct FDialogImageRow : public FDialogImageDefaultRow
 	GENERATED_USTRUCT_BODY()
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="播放图片出场动画"))
-	bool bPlayMontage = false;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="播放图片出场动画"))
+	// bool bPlayMontage = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="使用默认图片和位置"))
-	bool bUseDefault = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="使用默认配置"))
+	bool bUseDefault = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="隐藏其他,只显示这个"))
-	bool bOccupy = false;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (DisplayName="隐藏其他,只显示这个,独占模式"))
+	// bool bOccupy = false;
 };
